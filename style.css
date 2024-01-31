@@ -1,0 +1,40 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html, body{
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    line-height: 1.5;
+    background-color: rgb(202, 242, 242);
+    display: flex;
+    justify-self: center;
+    align-items: center;
+}
+h1,
+h2,
+h3,
+h4,
+button,
+input,
+label {
+    line-height: 1.1;
+}
+
+.container {
+    margin-inline: auto;
+
+}
+
+
+
+.calculator {
+    background-color: rgb(171, 154, 154);
+    width: 210px;
+    height: 350px;
+    color: white;
+}
