@@ -29,7 +29,61 @@ label {
     margin-inline: auto;
 
 }
+.display {
+   
+    background-color: white;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    gap: 15px;
+    padding-block-start: 2.5rem;
+}
+.max-display {
+    flex:2 1 auto;
+    background-color: blueviolet;
+}
+.min-display {
+    flex: 1 1 auto;
+    background-color: rgb(88, 224, 64);
+    margin-block-end: 0.75rem;
+}
+.calculator > div {
+    background-color: hotpink;
+    outline: 1px solid red;
+}
+.display-container {
+    flex:1 1 0;
+}
+.buttons-container {
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+}
+.buttons-container > div:not(.buttons-last-two-rows){
+    flex:1;
+    background-color: aquamarine;
+    margin-bottom: .4rem;
+}
+.buttons-last-two-rows {
+    height: 40%;
+    background-color: white;
+    
 
+}
+.buttons-last-two-rows-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+.button-row {
+    display: flex;
+    justify-content: space-between;
+}
+.button {
+    width: 32.72px;
+    height: 32.72px;
+    background-color: rgb(233, 153, 33);
+}
 
 
 .calculator {
@@ -37,4 +91,7 @@ label {
     width: 210px;
     height: 350px;
     color: white;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
 }
