@@ -14,6 +14,7 @@ buttonsContainer.addEventListener('click', (event) => {
         //check whether the button clicked represents a function
         //eg. clearing the display
         if (isAFunctionButton(textContent)) {
+            handleFunctionButtons(textContent);
 
         } else {
             updateMinDisplay(textContent);
@@ -36,4 +37,29 @@ function isAFunctionButton(text) {
     //and are not meant to be displayed
     const functionSymbols = ['CE', '+/-', '='];
     return functionSymbols.includes(text);
+}
+
+function handleFunctionButtons(functionSymbol) {
+    switch (functionSymbol) {
+        case 'CE':
+            clearMinDisplay();
+            break;
+        case '+/-':
+            toggleSign();
+            break;
+
+    }
+}
+
+function clearMinDisplay() {
+    minDisplay.textContent = '';
+}
+function toggleSign() {
+    let minContent = minDisplay.textContent;
+    if (minContent[0] !== '+') {
+        minContent = minContent.replace(/-/g, '');
+        minDisplay.textContent = '+' + minContent;
+    } else {
+        minDisplay.textContent = '-' + minContent.slice(1);
+    }
 }
