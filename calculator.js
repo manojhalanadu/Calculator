@@ -11,11 +11,15 @@ buttonsContainer.addEventListener('click', (event) => {
     if (target.classList.contains('button') || paragraphs.includes(target)) {
 
         textContent = target.textContent.trim();
-        if (isAnOperator(textContent)) {
-            
+        //check whether the button clicked represents a function
+        //eg. clearing the display
+        if (isAFunctionButton(textContent)) {
+
+        } else {
+            updateMinDisplay(textContent);
         }
 
-        updateMinDisplay(textContent);
+        
         
     }
 });
@@ -27,7 +31,9 @@ function updateMinDisplay(content) {
     }
 }
 
-function isAnOperator(character) {
-    const operators = ['+', '-', '/', 'x', '%', '+/-', '='];
-    return operators.includes(character);
+function isAFunctionButton(text) {
+    //function symbols here refer to symbols that represent some actions
+    //and are not meant to be displayed
+    const functionSymbols = ['CE', '+/-', '='];
+    return functionSymbols.includes(text);
 }
