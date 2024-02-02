@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
     <link rel="stylesheet" href="style.css">
+    <script src="calculator.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -13,9 +14,13 @@
                 <div class="display">
                     <div class="max-display-container">
                         <div class="equals-Sign">=</div>
-                        <div class="max-display">0000000000</div>
+                        <div class="max-display">
+                            <div class="max-display-content">00000000000</div>
+                        </div>
                     </div>
-                    <div class="min-display">10x10</div>
+                    <div class="min-display-container">
+                        <div class="min-display">9!</div>
+                    </div>
                 </div>
             </div>
             <div class="buttons-container">
@@ -44,7 +49,7 @@
                         <p>9</p>
                     </div>
                     <div class="button button-light">
-                        <p>*</p>
+                        <p>x</p>
                     </div>
                 </div>
                 <div class="buttons-third-row button-row">

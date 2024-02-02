@@ -35,10 +35,7 @@ label {
     display: flex;
     height: 100%;
     flex-direction: column;
-    gap: 15px;
     padding-block-start: 1.5rem;
-    writing-mode: horizontal-tb;
-    direction: rtl;
     color: white;
 }
 .max-display {
@@ -49,25 +46,29 @@ label {
     overflow: auto;
     flex: 1;
     /* text-shadow: 2px 2px 2px white; */
+    display: flex;
+    justify-content: flex-end;
 }
 .max-display-container {
     display: flex;
     font-weight: 900;
 }
 .equals-Sign {
-    order:1;
     /* background-color: aliceblue; */
     font-size: 2rem;
     color: #11dff1;
     /* text-shadow: 2px 2px 2px #11dff1; */
 }
 .min-display {
-    height: 30%;
     /* background-color: rgb(88, 224, 64); */
     margin-block-end: 0.75rem;
     /* background-color: azure; */
     /* text-shadow: 2px 2px 2px white; */
 ;
+}
+.min-display-container {
+    display: flex;
+    justify-content: flex-end;
 }
 .calculator > div {
     /* background-color: hotpink; */
@@ -112,6 +113,7 @@ label {
     align-items: center;
     font-weight: 900;
     border-radius: 4px;
+    cursor: pointer;
 }
 .button-dark {
     background-color: #000050;
