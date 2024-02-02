@@ -47,6 +47,10 @@ function handleFunctionButtons(functionSymbol) {
         case '+/-':
             toggleSign();
             break;
+        case '=':
+            const [operand1, operand2, operator] = parseExpression();
+            operate();
+            break;
 
     }
 }
@@ -62,4 +66,37 @@ function toggleSign() {
     } else {
         minDisplay.textContent = '-' + minContent.slice(1);
     }
+}
+
+function operate(operand1, operand2, operator) {
+    switch (operator) {
+        case '+':
+            add(operand1, operand2);
+            break;
+        case '-':
+            substract(operand1, operand2);
+            break;
+        case 'x':
+            multiply(operand1, operand2);
+            break;
+        case '/':
+            divide(operand1, operand2);
+            break;
+    }
+}
+
+function add(operand1, operand2) {
+    return operand1 + operand2;
+}
+
+function substract(operand1, operand2) {
+    return operand1 - operand2;
+}
+
+function multiply(operand1, operand2) {
+    return operand1 * operand2;
+}
+
+function divide(operand1, operand2) {
+    return operand1 / operand2;
 }
