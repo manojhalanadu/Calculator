@@ -17,7 +17,7 @@ buttonsContainer.addEventListener('click', (event) => {
         textContent = target.textContent.trim();
         if (maxDisplay.textContent !== '') {
             minDisplay.textContent = maxDisplay.textContent;
-            maxDisplay.textContent = '';
+            clearMaxDisplay();
         }
         //check whether the button clicked represents a function
         //eg. clearing the display
@@ -135,29 +135,32 @@ function parseExpression() {
 }
 
 function updateMaxDisplay(content) {
-    toggleEqualDisplay();
     content = +content;
     if (content > MAX_NUMBER) {
         content = content.toExponential(3);
     } else {
         content = +content.toFixed(4);
     }
-
+    
     maxDisplay.textContent = content;
+    toggleEqualDisplay();
 }
 
 function clearMaxDisplay() {
     maxDisplay.textContent = '';
+
+    toggleEqualDisplay();
 }
 
 function createSeperationLine() {
     minDisplay.parentElement.style.borderTop = '1px solid white';
 }
 
-function toggleEqualDisplay(){
-    if (equalSymbol.textContent !== '=') {
-        equalSymbol.textContent = '=';
-    } else {
+function toggleEqualDisplay() {
+    console.log(maxDisplay.textContent === '');
+    if (maxDisplay.textContent === '') {
         equalSymbol.textContent = '';
+    } else {
+        equalSymbol.textContent = '=';
     }
 }
