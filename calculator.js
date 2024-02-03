@@ -11,6 +11,9 @@ const MAX_NUMBER = 9999999999;
 
 
 buttonsContainer.addEventListener('click', (event) => {
+    if (minDisplay.textContent === '0') {
+        clearMinDisplay();
+    }
     const target = event.target;
     if (target.classList.contains('button') || paragraphs.includes(target)) {
 
@@ -54,6 +57,7 @@ function handleFunctionButtons(functionSymbol) {
             clearMaxDisplay();
             minDisplay.parentElement.style.borderTop = '';
             toggleEqualDisplay();
+            setDefaultZero();
             break;
         case '+/-':
             toggleSign();
@@ -74,7 +78,7 @@ function handleFunctionButtons(functionSymbol) {
 }
 
 function isValidExpression(expression) {
-    const regex = /(-?[.\d]+)([\+-\/x])(-?\+?[.\d+])/;
+    let regex = /([+-]?\d+.?\d*)([\+-\/x])([+-]?\d+.?\d*)/;
     return regex.test(expression);
     
 }
@@ -132,7 +136,7 @@ function divide(operand1, operand2) {
 
 function parseExpression() {
     let minContent = minDisplay.textContent;
-    let regex = /(-?[.\d]+)([\+-\/x])(-?\+?[.\d+])/;
+    let regex = /([+-]?\d+.?\d*)([\+-\/x])([+-]?\d+.?\d*)/;
     let [, operand1, operator, operand2] = regex.exec(minContent);
     return [operand1, operand2, operator];
 }
@@ -160,7 +164,6 @@ function createSeperationLine() {
 }
 
 function toggleEqualDisplay() {
-    console.log(maxDisplay.textContent === '');
     if (maxDisplay.textContent === '') {
         equalSymbol.textContent = '';
     } else {
@@ -171,4 +174,8 @@ function toggleEqualDisplay() {
 function deleteLastCharacter() {
     let updatedMinContent = minDisplay.textContent.slice(0, -1);
     minDisplay.textContent = updatedMinContent;
+}
+
+function setDefaultZero() {
+    minDisplay.textContent = '0';
 }
