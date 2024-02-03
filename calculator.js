@@ -55,7 +55,7 @@ function handleFunctionButtons(functionSymbol) {
         case 'CE':
             clearMinDisplay();
             clearMaxDisplay();
-            minDisplay.parentElement.style.borderTop = '';
+            removeSeperationLine();
             toggleEqualDisplay();
             setDefaultZero();
             break;
@@ -68,6 +68,10 @@ function handleFunctionButtons(functionSymbol) {
                 operate(operand1, operand2, operator);
                 //creates a line between the min and max display
                 createSeperationLine();
+            } else {
+                clearMaxDisplay();
+                clearMinDisplay();
+                removeSeperationLine();
             }
             break;
         case '←':
@@ -79,7 +83,7 @@ function handleFunctionButtons(functionSymbol) {
 
 function isValidExpression(expression) {
     let regex = /([+-]?\d+.?\d*)([\+-\/x])([+-]?\d+.?\d*)/;
-    return regex.test(expression) || /e/.test(expression);
+    return regex.test(expression) || /e\+/.test(expression);
     
 }
 
@@ -101,6 +105,9 @@ function operate(operand1, operand2, operator) {
     operand1 = +operand1;
     operand2 = +operand2;
     let result = '';
+    if (operator === '/' && operand2 === 0) {
+            return throwSnarkyComment();
+    }
     switch (operator) {
         case '+':
             result += add(operand1, operand2);
@@ -136,6 +143,7 @@ function divide(operand1, operand2) {
 
 function parseExpression() {
     let minContent = minDisplay.textContent;
+    
     let regex = /([+-]?\d+\.?\d*(e[+-]?\d+)?)([+-/x])([+-]?\d+\.?\d*)/;
     let [,operand1,,operator, operand2] = regex.exec(minContent);
     return [operand1, operand2, operator];
@@ -163,6 +171,10 @@ function createSeperationLine() {
     minDisplay.parentElement.style.borderTop = '1px solid white';
 }
 
+function removeSeperationLine() {
+    minDisplay.parentElement.style.borderTop = '';
+}
+
 function toggleEqualDisplay() {
     if (maxDisplay.textContent === '') {
         equalSymbol.textContent = '';
@@ -178,4 +190,9 @@ function deleteLastCharacter() {
 
 function setDefaultZero() {
     minDisplay.textContent = '0';
+}
+
+function throwSnarkyComment() {
+    maxDisplay.textContent = 'Nice try!, but';
+    minDisplay.textContent = "can't devide a number by 0";
 }
