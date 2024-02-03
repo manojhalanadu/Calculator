@@ -69,9 +69,14 @@ function handleFunctionButtons(functionSymbol) {
                 //creates a line between the min and max display
                 createSeperationLine();
             } else {
-                clearMaxDisplay();
-                clearMinDisplay();
-                removeSeperationLine();
+                maxDisplay.style.fontSize = '1rem';
+                maxDisplay.textContent = 'Invalid Expression';
+                setTimeout(() => {
+                    clearMaxDisplay();
+                    clearMinDisplay();
+                    removeSeperationLine();
+                    maxDisplay.style.fontSize = '2rem';
+                }, 2000);
             }
             break;
         case '←':
@@ -82,9 +87,8 @@ function handleFunctionButtons(functionSymbol) {
 }
 
 function isValidExpression(expression) {
-    let regex = /([+-]?\d+.?\d*)([\+-\/x])([+-]?\d+.?\d*)/;
-    return regex.test(expression) || /e\+/.test(expression);
-    
+    let regex = /^([+-]?\d+(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-]?\d+(\.\d+)?)$/;
+    return regex.test(expression);
 }
 
 function clearMinDisplay() {
@@ -144,8 +148,8 @@ function divide(operand1, operand2) {
 function parseExpression() {
     let minContent = minDisplay.textContent;
     
-    let regex = /([+-]?\d+\.?\d*(e[+-]?\d+)?)([+-/x])([+-]?\d+\.?\d*)/;
-    let [,operand1,,operator, operand2] = regex.exec(minContent);
+    let regex = /^([+-]?\d+(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-]?\d+(\.\d+)?)$/;
+    let [,operand1,,,operator, operand2] = regex.exec(minContent);
     return [operand1, operand2, operator];
 }
 
@@ -194,5 +198,5 @@ function setDefaultZero() {
 
 function throwSnarkyComment() {
     maxDisplay.textContent = 'Nice try!, but';
-    minDisplay.textContent = "can't devide a number by 0";
+    minDisplay.textContent = "can't devide a number by 0  ";
 }
