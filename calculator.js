@@ -43,7 +43,7 @@ function updateMinDisplay(content) {
 function isAFunctionButton(text) {
     //function symbols here refer to symbols that represent some actions
     //and are not meant to be displayed
-    const functionSymbols = ['CE', '+/-', '='];
+    const functionSymbols = ['CE', '+/-', '=', '←'];
     return functionSymbols.includes(text);
 }
 
@@ -65,6 +65,9 @@ function handleFunctionButtons(functionSymbol) {
                 //creates a line between the min and max display
                 createSeperationLine();
             }
+            break;
+        case '←':
+            deleteLastCharacter();
             break;
 
     }
@@ -163,4 +166,9 @@ function toggleEqualDisplay() {
     } else {
         equalSymbol.textContent = '=';
     }
+}
+
+function deleteLastCharacter() {
+    let updatedMinContent = minDisplay.textContent.slice(0, -1);
+    minDisplay.textContent = updatedMinContent;
 }
