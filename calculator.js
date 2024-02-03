@@ -91,6 +91,8 @@ function toggleSign() {
 }
 
 function operate(operand1, operand2, operator) {
+    operand1 = +operand1;
+    operand2 = +operand2;
     let result = '';
     switch (operator) {
         case '+':
