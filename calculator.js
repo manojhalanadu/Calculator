@@ -7,17 +7,11 @@ const maxDisplay = document.querySelector('.max-display-content');
 const equalSymbol = document.querySelector('.equals-symbol');
 const MAX_NUMBER = 9999999999;
 
-
-
-
 buttonsContainer.addEventListener('click', (event) => {
-    if (minDisplay.textContent === '0') {
-        clearMinDisplay();
-    }
     const target = event.target;
+    let textContent = target.textContent.trim();
     if (target.classList.contains('button') || paragraphs.includes(target)) {
 
-        textContent = target.textContent.trim();
         if (maxDisplay.textContent !== '') {
             minDisplay.textContent = maxDisplay.textContent;
             clearMaxDisplay();
@@ -30,16 +24,13 @@ buttonsContainer.addEventListener('click', (event) => {
         } else {
             updateMinDisplay(textContent);
         }
-
-        
-        
     }
 });
 function updateMinDisplay(content) {
-    if (textContent === 'CE') {
+    if (content === 'CE') {
         minDisplay.textContent = '';
     } else {
-        minDisplay.textContent += textContent;
+        minDisplay.textContent += content;
     }
 }
 
@@ -57,7 +48,6 @@ function handleFunctionButtons(functionSymbol) {
             clearMaxDisplay();
             removeSeperationLine();
             toggleEqualDisplay();
-            setDefaultZero();
             break;
         case '+/-':
             toggleSign();
@@ -192,11 +182,11 @@ function deleteLastCharacter() {
     minDisplay.textContent = updatedMinContent;
 }
 
-function setDefaultZero() {
-    minDisplay.textContent = '0';
-}
-
 function throwSnarkyComment() {
-    maxDisplay.textContent = 'Nice try!, but';
-    minDisplay.textContent = "can't devide a number by 0  ";
+    maxDisplay.textContent = 'Nice try!,but';
+    minDisplay.textContent = "can't devide a number by 0";
+    setTimeout(() => {
+        clearMaxDisplay();
+        clearMinDisplay();
+    }, 2000);
 }

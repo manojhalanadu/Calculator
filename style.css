@@ -3,6 +3,7 @@
 *::after {
   box-sizing: border-box;
 }
+
 html, body{
     height: 100%;
 }
@@ -30,8 +31,6 @@ label {
 
 }
 .display {
-   
-    /* background-color: white; */
     display: flex;
     height: 100%;
     flex-direction: column;
@@ -40,71 +39,64 @@ label {
 }
 .max-display {
     height: 55px;
-    /* background-color: azure; */
     font-size: 2rem;
-    /* background-color: blueviolet; */
     overflow: auto;
     flex: 1;
-    /* text-shadow: 2px 2px 2px white; */
     display: flex;
     justify-content: flex-end;
 }
+
 .max-display-container {
     display: flex;
     font-weight: 900;
 }
 .equals-symbol {
-    /* background-color: aliceblue; */
     font-size: 2rem;
     color: #11dff1;
-    /* text-shadow: 2px 2px 2px #11dff1; */
 }
+
 .min-display {
-    /* background-color: rgb(88, 224, 64); */
     margin-block-end: 0.75rem;
-    /* background-color: azure; */
-    /* text-shadow: 2px 2px 2px white; */
-;
 }
+
 .min-display-container {
     display: flex;
     justify-content: flex-end;
 }
-.calculator > div {
-    /* background-color: hotpink; */
-    /* outline: 1px solid red; */
-}
+
 .display-container {
     flex:1 1 0;
 }
+
 .buttons-container {
     height: 60%;
     display: flex;
     flex-direction: column;
     text-align: center;
 }
+
 .buttons-container > div:not(.buttons-last-two-rows){
     flex:1;
-    /* background-color: aquamarine; */
     margin-bottom: .4rem;
 }
+
 .buttons-last-two-rows {
     height: 40%;
-    /* background-color: white; */
     display: flex;
-    
-
 }
+
 .buttons-last-two-rows-left {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
     flex: 1;
 }
+
 .button-row {
     display: flex;
     justify-content: space-between;
 }
+
 .button {
     width: 32.72px;
     height: 32.72px;
@@ -115,13 +107,14 @@ label {
     border-radius: 4px;
     cursor: pointer;
 }
+
 .button-dark {
     background-color: #000050;
 }
+
 .button-light {
     background-color: #11dff1;
 }
-
 
 .calculator {
     background-color: #000029;
@@ -133,9 +126,8 @@ label {
     flex-direction: column;
     box-shadow: 0 4px 12px #000029;
     border-radius: 8px;
-    
-    
 }
+
 .addButton {
     width: 32.72px;
     height: 100%;
