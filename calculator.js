@@ -31,6 +31,7 @@ buttonsContainer.addEventListener('click', (event) => {
 });
 
 function mapKey(key) {
+    
     switch (key) {
         case 'Delete':
             return 'CE';
