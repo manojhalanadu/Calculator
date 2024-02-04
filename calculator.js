@@ -6,6 +6,9 @@ const equals = buttonsContainer.querySelector('#equals');
 const maxDisplay = document.querySelector('.max-display-content');
 const equalSymbol = document.querySelector('.equals-symbol');
 const MAX_NUMBER = 9999999999;
+const keysToBeMapped = ['Backspace', 'Delete', 'Enter', '*'];
+const validKeys = ['0', '1', '2', '3', '4', '5', '6', '7',
+    '8', '9', '+', '-', '/', 'x', 'CE', '.', '←'];
 
 buttonsContainer.addEventListener('click', (event) => {
     const target = event.target;
@@ -26,6 +29,39 @@ buttonsContainer.addEventListener('click', (event) => {
         }
     }
 });
+
+function mapKey(key) {
+    switch (key) {
+        case 'Delete':
+            return 'CE';
+        case 'Enter':
+            return '=';
+        case 'Backspace':
+            return '←';
+        case '*':
+            return 'x';
+    }
+}
+
+document.body.addEventListener('keydown', (event) => {
+    let key = event.key;
+        if (maxDisplay.textContent !== '') {
+         minDisplay.textContent = maxDisplay.textContent;
+        clearMaxDisplay();
+        }
+        if (keysToBeMapped.includes(key)) {
+            key = mapKey(key);
+        }
+        //check whether the button clicked represents a function
+        //eg. clearing the display
+        if (isAFunctionButton(key)) {
+            handleFunctionButtons(key);
+
+        } else if (validKeys.includes(key)) {
+            updateMinDisplay(key);
+        }
+});
+
 function updateMinDisplay(content) {
     if (content === 'CE') {
         minDisplay.textContent = '';
