@@ -114,7 +114,12 @@ function handleFunctionButtons(functionSymbol) {
 }
 
 function isValidExpression(expression) {
-    let regex = /^([+-]?\d+(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-]?\d+(\.\d+)?)$/;
+    // let regex = /^([+-]?(\d+)?(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-] ? (\d+)?(\.\d +)?)$/;
+    const regex = new RegExp(
+        '^([+-]?(\\d+)?(\\.\\d+)?(e[+-]?\\d+)?)' +
+        '([+/x-])' +
+        '([+-]?(\\d+)?(\\.\\d+)?)$'
+    );
     return regex.test(expression);
 }
 
@@ -175,8 +180,12 @@ function divide(operand1, operand2) {
 function parseExpression() {
     let minContent = minDisplay.textContent;
     
-    let regex = /^([+-]?\d+(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-]?\d+(\.\d+)?)$/;
-    let [,operand1,,,operator, operand2] = regex.exec(minContent);
+    const regex = new RegExp(
+        '^([+-]?(\\d+)?(\\.\\d+)?(e[+-]?\\d+)?)' +
+        '([+/x-])' +
+        '([+-]?(\\d+)?(\\.\\d+)?)$'
+    );
+    let [,operand1,,,,operator, operand2] = regex.exec(minContent);
     return [operand1, operand2, operator];
 }
 
