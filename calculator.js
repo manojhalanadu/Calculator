@@ -85,7 +85,7 @@ document.body.addEventListener("keydown", (event) => {
   }
 
   if (isAnOperator(key)) {
-    handleAnOperator();
+    return handleAnOperator(key);
   }
   //check whether the button clicked represents a function
   //eg. clearing the display
@@ -131,7 +131,7 @@ function handleFunctionButtons(functionSymbol) {
     case "=":
       if (isValidExpression(minDisplay.textContent)) {
         handleValidExpression(minDisplay.textContent);
-      } else {
+      } else if (minDisplay.textContent != '') {
         handleInvalidExpression();
       }
       break;
@@ -149,14 +149,14 @@ function handleValidExpression(expression) {
 }
 
 function handleInvalidExpression() {
-  maxDisplay.style.fontSize = "1rem";
-  maxDisplay.textContent = "Invalid Expression";
+  // maxDisplay.style.fontSize = "1rem";
+  maxDisplay.textContent = "Invalid";
 
   setTimeout(() => {
     clearMaxDisplay();
-    clearMinDisplay();
+    // clearMinDisplay();
     removeSeperationLine();
-    maxDisplay.style.fontSize = "2rem";
+    // maxDisplay.style.fontSize = "2rem";
   }, 2000);
 }
 
@@ -205,8 +205,14 @@ function operate(operand1, operand2, operator) {
       break;
   }
   updateMaxDisplay(result);
-  minDisplay.textContent =
-    maxDisplay.textContent + minDisplay.textContent.slice(-1);
+
+  if (isAnOperator(minDisplay.textContent.slice(-1))) {
+    minDisplay.textContent =
+      maxDisplay.textContent + minDisplay.textContent.slice(-1);
+  } else {
+    minDisplay.textContent = maxDisplay.textContent;
+  }
+  
 }
 
 function add(operand1, operand2) {
