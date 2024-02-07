@@ -32,18 +32,13 @@ buttonsContainer.addEventListener("click", (event) => {
   let textContent = target.textContent.trim();
   if (target.classList.contains("button") || paragraphs.includes(target)) {
     if (isAnOperator(textContent)) {
-      updateMaxDisplay(textContent);
-
-      if (isValidExpression(minDisplay.textContent.slice(0, -1)));
-      {
-        handleFunctionButtons("=");
-      }
+      return handleAnOperator(textContent);
     }
 
-    if (maxDisplay.textContent !== "") {
-      minDisplay.textContent = maxDisplay.textContent;
-      clearMaxDisplay();
-    }
+    // if (maxDisplay.textContent !== "") {
+    //   minDisplay.textContent = maxDisplay.textContent;
+    //   clearMaxDisplay();
+    // }
     //check whether the button clicked represents a function
     //eg. clearing the display
     if (isAFunctionButton(textContent)) {
@@ -53,6 +48,17 @@ buttonsContainer.addEventListener("click", (event) => {
     }
   }
 });
+
+function handleAnOperator(operator) {
+  let expression = minDisplay.textContent;
+
+  if (isValidExpression(expression)) {
+    updateMinDisplay(operator);
+    return handleValidExpression(expression);
+  } else {
+    return updateMinDisplay(operator);
+  }
+}
 
 function mapKey(key) {
   switch (key) {
@@ -69,12 +75,17 @@ function mapKey(key) {
 
 document.body.addEventListener("keydown", (event) => {
   let key = event.key;
-  if (maxDisplay.textContent !== "") {
-    minDisplay.textContent = maxDisplay.textContent;
-    clearMaxDisplay();
-  }
+
+  // if (maxDisplay.textContent !== "") {
+  //   minDisplay.textContent = maxDisplay.textContent;
+  //   clearMaxDisplay();
+  // }
   if (keysToBeMapped.includes(key)) {
     key = mapKey(key);
+  }
+
+  if (isAnOperator(key)) {
+    handleAnOperator();
   }
   //check whether the button clicked represents a function
   //eg. clearing the display
@@ -119,7 +130,7 @@ function handleFunctionButtons(functionSymbol) {
       break;
     case "=":
       if (isValidExpression(minDisplay.textContent)) {
-        handleValidExpression();
+        handleValidExpression(minDisplay.textContent);
       } else {
         handleInvalidExpression();
       }
@@ -130,17 +141,17 @@ function handleFunctionButtons(functionSymbol) {
   }
 }
 
-function handleValidExpression() {
-  const [operand1, operand2, operator] = parseExpression();
+function handleValidExpression(expression) {
+  const [operand1, operand2, operator] = parseExpression(expression);
   operate(operand1, operand2, operator);
   //creates a line between the min and max display
   createSeperationLine();
 }
 
-function handleInvalidExpression(){
+function handleInvalidExpression() {
   maxDisplay.style.fontSize = "1rem";
   maxDisplay.textContent = "Invalid Expression";
-  
+
   setTimeout(() => {
     clearMaxDisplay();
     clearMinDisplay();
@@ -194,6 +205,8 @@ function operate(operand1, operand2, operator) {
       break;
   }
   updateMaxDisplay(result);
+  minDisplay.textContent =
+    maxDisplay.textContent + minDisplay.textContent.slice(-1);
 }
 
 function add(operand1, operand2) {
@@ -212,15 +225,13 @@ function divide(operand1, operand2) {
   return operand1 / operand2;
 }
 
-function parseExpression() {
-  let minContent = minDisplay.textContent;
-
+function parseExpression(expression) {
   const regex = new RegExp(
     "^([+-]?(\\d+)?(\\.\\d+)?(e[+-]?\\d+)?)" +
       "([+/x-])" +
       "([+-]?(\\d+)?(\\.\\d+)?)$"
   );
-  let [, operand1, , , , operator, operand2] = regex.exec(minContent);
+  let [, operand1, , , , operator, operand2] = regex.exec(expression);
   return [operand1, operand2, operator];
 }
 
