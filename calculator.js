@@ -1,238 +1,273 @@
-const buttonsContainer = document.querySelector('.buttons-container');
-const buttons = buttonsContainer.querySelectorAll('.button');
-const minDisplay = document.querySelector('.min-display');
-const paragraphs = Array.from(document.querySelectorAll('.button p'));
-const equals = buttonsContainer.querySelector('#equals');
-const maxDisplay = document.querySelector('.max-display-content');
-const equalSymbol = document.querySelector('.equals-symbol');
+const buttonsContainer = document.querySelector(".buttons-container");
+const buttons = buttonsContainer.querySelectorAll(".button");
+const minDisplay = document.querySelector(".min-display");
+const paragraphs = Array.from(document.querySelectorAll(".button p"));
+const equals = buttonsContainer.querySelector("#equals");
+const maxDisplay = document.querySelector(".max-display-content");
+const equalSymbol = document.querySelector(".equals-symbol");
 const MAX_NUMBER = 9999999999;
-const keysToBeMapped = ['Backspace', 'Delete', 'Enter', '*'];
-const validKeys = ['0', '1', '2', '3', '4', '5', '6', '7',
-    '8', '9', '+', '-', '/', 'x', 'CE', '.', '←'];
+const keysToBeMapped = ["Backspace", "Delete", "Enter", "*"];
+const validKeys = [
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "+",
+  "-",
+  "/",
+  "x",
+  "CE",
+  ".",
+  "←",
+];
 
-buttonsContainer.addEventListener('click', (event) => {
-    const target = event.target;
-    let textContent = target.textContent.trim();
-    if (target.classList.contains('button') || paragraphs.includes(target)) {
+buttonsContainer.addEventListener("click", (event) => {
+  const target = event.target;
+  let textContent = target.textContent.trim();
+  if (target.classList.contains("button") || paragraphs.includes(target)) {
+    if (isAnOperator(textContent)) {
+      updateMaxDisplay(textContent);
 
-        if (maxDisplay.textContent !== '') {
-            minDisplay.textContent = maxDisplay.textContent;
-            clearMaxDisplay();
-        }
-        //check whether the button clicked represents a function
-        //eg. clearing the display
-        if (isAFunctionButton(textContent)) {
-            handleFunctionButtons(textContent);
-
-        } else {
-            updateMinDisplay(textContent);
-        }
+      if (isValidExpression(minDisplay.textContent.slice(0, -1)));
+      {
+        handleFunctionButtons("=");
+      }
     }
+
+    if (maxDisplay.textContent !== "") {
+      minDisplay.textContent = maxDisplay.textContent;
+      clearMaxDisplay();
+    }
+    //check whether the button clicked represents a function
+    //eg. clearing the display
+    if (isAFunctionButton(textContent)) {
+      handleFunctionButtons(textContent);
+    } else {
+      updateMinDisplay(textContent);
+    }
+  }
 });
 
 function mapKey(key) {
-    
-    switch (key) {
-        case 'Delete':
-            return 'CE';
-        case 'Enter':
-            return '=';
-        case 'Backspace':
-            return '←';
-        case '*':
-            return 'x';
-    }
+  switch (key) {
+    case "Delete":
+      return "CE";
+    case "Enter":
+      return "=";
+    case "Backspace":
+      return "←";
+    case "*":
+      return "x";
+  }
 }
 
-document.body.addEventListener('keydown', (event) => {
-    let key = event.key;
-        if (maxDisplay.textContent !== '') {
-         minDisplay.textContent = maxDisplay.textContent;
-        clearMaxDisplay();
-        }
-        if (keysToBeMapped.includes(key)) {
-            key = mapKey(key);
-        }
-        //check whether the button clicked represents a function
-        //eg. clearing the display
-        if (isAFunctionButton(key)) {
-            handleFunctionButtons(key);
-
-        } else if (validKeys.includes(key)) {
-            updateMinDisplay(key);
-        }
+document.body.addEventListener("keydown", (event) => {
+  let key = event.key;
+  if (maxDisplay.textContent !== "") {
+    minDisplay.textContent = maxDisplay.textContent;
+    clearMaxDisplay();
+  }
+  if (keysToBeMapped.includes(key)) {
+    key = mapKey(key);
+  }
+  //check whether the button clicked represents a function
+  //eg. clearing the display
+  if (isAFunctionButton(key)) {
+    handleFunctionButtons(key);
+  } else if (validKeys.includes(key)) {
+    updateMinDisplay(key);
+  }
 });
 
+function isAnOperator(string) {
+  const operators = ["+", "-", "/", "x"];
+
+  return operators.includes(string);
+}
+
 function updateMinDisplay(content) {
-    if (content === 'CE') {
-        minDisplay.textContent = '';
-    } else {
-        minDisplay.textContent += content;
-    }
+  if (content === "CE") {
+    minDisplay.textContent = "";
+  } else {
+    minDisplay.textContent += content;
+  }
 }
 
 function isAFunctionButton(text) {
-    //function symbols here refer to symbols that represent some actions
-    //and are not meant to be displayed
-    const functionSymbols = ['CE', '+/-', '=', '←'];
-    return functionSymbols.includes(text);
+  //function symbols here refer to symbols that represent some actions
+  //and are not meant to be displayed
+  const functionSymbols = ["CE", "+/-", "=", "←"];
+  return functionSymbols.includes(text);
 }
 
 function handleFunctionButtons(functionSymbol) {
-    switch (functionSymbol) {
-        case 'CE':
-            clearMinDisplay();
-            clearMaxDisplay();
-            removeSeperationLine();
-            toggleEqualDisplay();
-            break;
-        case '+/-':
-            toggleSign();
-            break;
-        case '=':
-            if (isValidExpression(minDisplay.textContent)) {
-                const [operand1, operand2, operator] = parseExpression();
-                operate(operand1, operand2, operator);
-                //creates a line between the min and max display
-                createSeperationLine();
-            } else {
-                maxDisplay.style.fontSize = '1rem';
-                maxDisplay.textContent = 'Invalid Expression';
-                setTimeout(() => {
-                    clearMaxDisplay();
-                    clearMinDisplay();
-                    removeSeperationLine();
-                    maxDisplay.style.fontSize = '2rem';
-                }, 2000);
-            }
-            break;
-        case '←':
-            deleteLastCharacter();
-            break;
+  switch (functionSymbol) {
+    case "CE":
+      clearMinDisplay();
+      clearMaxDisplay();
+      removeSeperationLine();
+      toggleEqualDisplay();
+      break;
+    case "+/-":
+      toggleSign();
+      break;
+    case "=":
+      if (isValidExpression(minDisplay.textContent)) {
+        handleValidExpression();
+      } else {
+        handleInvalidExpression();
+      }
+      break;
+    case "←":
+      deleteLastCharacter();
+      break;
+  }
+}
 
-    }
+function handleValidExpression() {
+  const [operand1, operand2, operator] = parseExpression();
+  operate(operand1, operand2, operator);
+  //creates a line between the min and max display
+  createSeperationLine();
+}
+
+function handleInvalidExpression(){
+  maxDisplay.style.fontSize = "1rem";
+  maxDisplay.textContent = "Invalid Expression";
+  
+  setTimeout(() => {
+    clearMaxDisplay();
+    clearMinDisplay();
+    removeSeperationLine();
+    maxDisplay.style.fontSize = "2rem";
+  }, 2000);
 }
 
 function isValidExpression(expression) {
-    // let regex = /^([+-]?(\d+)?(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-] ? (\d+)?(\.\d +)?)$/;
-    const regex = new RegExp(
-        '^([+-]?(\\d+)?(\\.\\d+)?(e[+-]?\\d+)?)' +
-        '([+/x-])' +
-        '([+-]?(\\d+)?(\\.\\d+)?)$'
-    );
-    return regex.test(expression);
+  // let regex = /^([+-]?(\d+)?(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-] ? (\d+)?(\.\d +)?)$/;
+  const regex = new RegExp(
+    "^([+-]?(\\d+)?(\\.\\d+)?(e[+-]?\\d+)?)" +
+      "([+/x-])" +
+      "([+-]?(\\d+)?(\\.\\d+)?)$"
+  );
+  return regex.test(expression);
 }
 
 function clearMinDisplay() {
-    minDisplay.textContent = '';
+  minDisplay.textContent = "";
 }
 function toggleSign() {
-    let minContent = minDisplay.textContent;
-    if (minContent[0] == '-') {
-        // minContent = minContent.replace(/-/g, '');
-        minDisplay.textContent = minContent.slice(1);
-
-    } else {
-        minDisplay.textContent = '-' + minContent;
-    }
+  let minContent = minDisplay.textContent;
+  if (minContent[0] == "-") {
+    // minContent = minContent.replace(/-/g, '');
+    minDisplay.textContent = minContent.slice(1);
+  } else {
+    minDisplay.textContent = "-" + minContent;
+  }
 }
 
 function operate(operand1, operand2, operator) {
-    operand1 = +operand1;
-    operand2 = +operand2;
-    let result = '';
-    if (operator === '/' && operand2 === 0) {
-            return throwSnarkyComment();
-    }
-    switch (operator) {
-        case '+':
-            result += add(operand1, operand2);
-            break;
-        case '-':
-            result += substract(operand1, operand2);
-            break;
-        case 'x':
-            result += multiply(operand1, operand2);
-            break;
-        case '/':
-            result += divide(operand1, operand2);
-            break;
-    }
-    updateMaxDisplay(result);
+  operand1 = +operand1;
+  operand2 = +operand2;
+  let result = "";
+  if (operator === "/" && operand2 === 0) {
+    return throwSnarkyComment();
+  }
+  switch (operator) {
+    case "+":
+      result += add(operand1, operand2);
+      break;
+    case "-":
+      result += substract(operand1, operand2);
+      break;
+    case "x":
+      result += multiply(operand1, operand2);
+      break;
+    case "/":
+      result += divide(operand1, operand2);
+      break;
+  }
+  updateMaxDisplay(result);
 }
 
 function add(operand1, operand2) {
-    return operand1 + operand2;
+  return operand1 + operand2;
 }
 
 function substract(operand1, operand2) {
-    return operand1 - operand2;
+  return operand1 - operand2;
 }
 
 function multiply(operand1, operand2) {
-    return operand1 * operand2;
+  return operand1 * operand2;
 }
 
 function divide(operand1, operand2) {
-    return operand1 / operand2;
+  return operand1 / operand2;
 }
 
 function parseExpression() {
-    let minContent = minDisplay.textContent;
-    
-    const regex = new RegExp(
-        '^([+-]?(\\d+)?(\\.\\d+)?(e[+-]?\\d+)?)' +
-        '([+/x-])' +
-        '([+-]?(\\d+)?(\\.\\d+)?)$'
-    );
-    let [,operand1,,,,operator, operand2] = regex.exec(minContent);
-    return [operand1, operand2, operator];
+  let minContent = minDisplay.textContent;
+
+  const regex = new RegExp(
+    "^([+-]?(\\d+)?(\\.\\d+)?(e[+-]?\\d+)?)" +
+      "([+/x-])" +
+      "([+-]?(\\d+)?(\\.\\d+)?)$"
+  );
+  let [, operand1, , , , operator, operand2] = regex.exec(minContent);
+  return [operand1, operand2, operator];
 }
 
 function updateMaxDisplay(content) {
-    content = +content;
-    if (content > MAX_NUMBER) {
-        content = content.toExponential(3);
-    } else {
-        content = +content.toFixed(4);
-    }
-    
-    maxDisplay.textContent = content;
-    toggleEqualDisplay();
+  content = +content;
+  if (content > MAX_NUMBER) {
+    content = content.toExponential(3);
+  } else {
+    content = +content.toFixed(4);
+  }
+
+  maxDisplay.textContent = content;
+  toggleEqualDisplay();
 }
 
 function clearMaxDisplay() {
-    maxDisplay.textContent = '';
+  maxDisplay.textContent = "";
 
-    toggleEqualDisplay();
+  toggleEqualDisplay();
 }
 
 function createSeperationLine() {
-    minDisplay.parentElement.style.borderTop = '1px solid white';
+  minDisplay.parentElement.style.borderTop = "1px solid white";
 }
 
 function removeSeperationLine() {
-    minDisplay.parentElement.style.borderTop = '';
+  minDisplay.parentElement.style.borderTop = "";
 }
 
 function toggleEqualDisplay() {
-    if (maxDisplay.textContent === '') {
-        equalSymbol.textContent = '';
-    } else {
-        equalSymbol.textContent = '=';
-    }
+  if (maxDisplay.textContent === "") {
+    equalSymbol.textContent = "";
+  } else {
+    equalSymbol.textContent = "=";
+  }
 }
 
 function deleteLastCharacter() {
-    let updatedMinContent = minDisplay.textContent.slice(0, -1);
-    minDisplay.textContent = updatedMinContent;
+  let updatedMinContent = minDisplay.textContent.slice(0, -1);
+  minDisplay.textContent = updatedMinContent;
 }
 
 function throwSnarkyComment() {
-    maxDisplay.textContent = 'Nice try!,but';
-    minDisplay.textContent = "can't devide a number by 0";
-    setTimeout(() => {
-        clearMaxDisplay();
-        clearMinDisplay();
-    }, 2000);
+  maxDisplay.textContent = "Nice try!,but";
+  minDisplay.textContent = "can't devide a number by 0";
+  setTimeout(() => {
+    clearMaxDisplay();
+    clearMinDisplay();
+  }, 2000);
 }
