@@ -103,11 +103,19 @@ function isAnOperator(string) {
 }
 
 function updateMinDisplay(content) {
+  if (isMinDisplayContentExceeding()) {
+    return;
+  }
   if (content === "CE") {
     minDisplay.textContent = "";
   } else {
     minDisplay.textContent += content;
   }
+}
+
+function isMinDisplayContentExceeding() {
+  const minContentLength = minDisplay.textContent.length;
+  return minContentLength > 20;
 }
 
 function isAFunctionButton(text) {
