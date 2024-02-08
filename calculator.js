@@ -103,9 +103,10 @@ function isAnOperator(string) {
 }
 
 function updateMinDisplay(content) {
-  if (isMinDisplayContentExceeding()) {
+  if ( isMinDisplayContentExceeding() ) {
     return;
   }
+
   if (content === "CE") {
     minDisplay.textContent = "";
   } else {
@@ -181,6 +182,7 @@ function isValidExpression(expression) {
 function clearMinDisplay() {
   minDisplay.textContent = "";
 }
+
 function toggleSign() {
   let minContent = minDisplay.textContent;
   if (minContent[0] == "-") {
@@ -251,14 +253,29 @@ function parseExpression(expression) {
 
 function updateMaxDisplay(content) {
   content = +content;
+
   if (content > MAX_NUMBER) {
     content = content.toExponential(3);
   } else {
     content = +content.toFixed(4);
   }
 
+   if ((content+"").length > 10) {
+     reduceMaxDisplayFontSize();
+   } else {
+     increaseMaxDisplayFontSize();
+   }
+
   maxDisplay.textContent = content;
   toggleEqualDisplay();
+}
+
+function reduceMaxDisplayFontSize() {
+  maxDisplay.style.fontSize = '1.5rem';
+}
+
+function increaseMaxDisplayFontSize() {
+  maxDisplay.style.fontSize = '2rem';
 }
 
 function clearMaxDisplay() {
