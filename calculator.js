@@ -174,8 +174,9 @@ function handleInvalidExpression() {
 
 function isValidExpression(expression) {
   // let regex = /^([+-]?(\d+)?(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-] ? (\d+)?(\.\d +)?)$/;
+  expression = expression.trim();
   const regex = new RegExp(
-    "^([+-]?(\\d+)?(\\.\\d+)(e[+-]?\\d+)?)" +
+    "^([+-]?(\\d+)(\\.\\d+)?(e[+-]?\\d+)?)" +
       " ([+/x-])" +
       " ([+-]?(\\d+)(\\.\\d+)?)$"
   );
@@ -187,12 +188,14 @@ function clearMinDisplay() {
 }
 
 function toggleSign() {
-  let minContent = minDisplay.textContent;
+  let minContent = minDisplay.textContent.trim();
+
   if (minContent[0] == "-") {
-    // minContent = minContent.replace(/-/g, '');
     minDisplay.textContent = minContent.slice(1);
+    encloseOperatorWithSpan();
   } else {
     minDisplay.textContent = "-" + minContent;
+    encloseOperatorWithSpan();
   }
 }
 
@@ -200,6 +203,8 @@ function operate(operand1, operand2, operator) {
   operand1 = +operand1;
   operand2 = +operand2;
   let result = "";
+  let minContent = minDisplay.textContent.trim();
+
   if (operator === "/" && operand2 === 0) {
     return throwSnarkyComment();
   }
@@ -220,10 +225,9 @@ function operate(operand1, operand2, operator) {
   updateMaxDisplay(result);
 
   if (isAnOperator(minDisplay.textContent.slice(-2)[0])) {
-    // maxDisplay.textContent + minDisplay.textContent.slice(-1);
     minDisplay.innerHTML =
-      maxDisplay.textContent +
-      `<span> ${minDisplay.textContent.slice(-2)[0]} </span>`;
+      maxDisplay.textContent + minDisplay.textContent.slice(-2)[0];
+    encloseOperatorWithSpan();
   } else {
     minDisplay.textContent = maxDisplay.textContent;
   }
@@ -247,7 +251,7 @@ function divide(operand1, operand2) {
 
 function parseExpression(expression) {
   const regex = new RegExp(
-    "^([+-]?(\\d+)?(\\.\\d+)(e[+-]?\\d+)?)" +
+    "^([+-]?(\\d+)(\\.\\d+)?(e[+-]?\\d+)?)" +
       " ([+/x-])" +
       " ([+-]?(\\d+)(\\.\\d+)?)$"
   );
@@ -305,9 +309,24 @@ function toggleEqualDisplay() {
 }
 
 function deleteLastCharacter() {
-  let updatedMinContent = minDisplay.textContent.slice(0, -1);
-  minDisplay.innerHTML = updatedMinContent.replace(/([+x/-])/g,
-  ' <span>$1</span> ');
+  let minContent = minDisplay.textContent;
+  let updatedMinContent = '';
+  
+  if(isAnOperator(minContent.slice(-2,-1))) {
+    updatedMinContent = minDisplay.textContent.slice(0, -3);
+  } else {
+    updatedMinContent = minDisplay.textContent.slice(0, -1);
+  }
+  minDisplay.textContent = updatedMinContent;
+  encloseOperatorWithSpan();
+}
+
+function encloseOperatorWithSpan() {
+  const minContent = minDisplay.textContent;
+  minDisplay.innerHTML = minContent.replace(
+    /([+x/-])/g,
+    " <span>$1</span> "
+  );
 }
 
 function throwSnarkyComment() {
