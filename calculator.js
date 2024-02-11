@@ -7,6 +7,7 @@ const maxDisplay = document.querySelector(".max-display-content");
 const equalSymbol = document.querySelector(".equals-symbol");
 const MAX_NUMBER = 9999999999;
 const keysToBeMapped = ["Backspace", "Delete", "Enter", "*"];
+const operators = ["+", "-", "/", "x"];
 const validKeys = [
   "0",
   "1",
@@ -97,7 +98,6 @@ document.body.addEventListener("keydown", (event) => {
 });
 
 function isAnOperator(string) {
-  const operators = ["+", "-", "/", "x"];
 
   return operators.includes(string);
 }
@@ -109,8 +109,10 @@ function updateMinDisplay(content) {
 
   if (content === "CE") {
     minDisplay.textContent = "";
+  } else if (operators.includes(content)) {
+    minDisplay.innerHTML += ` <span>${content}</span> `;
   } else {
-    minDisplay.textContent += content;
+    minDisplay.innerHTML += content;
   }
 }
 
@@ -138,9 +140,10 @@ function handleFunctionButtons(functionSymbol) {
       toggleSign();
       break;
     case "=":
-      if (isValidExpression(minDisplay.textContent)) {
-        handleValidExpression(minDisplay.textContent);
-      } else if (minDisplay.textContent != '') {
+      const minContent = minDisplay.textContent;
+      if (isValidExpression(minContent)) {
+        handleValidExpression(minContent);
+      } else if (minContent != '' && (/[+/x-]/.test(minContent))) {
         handleInvalidExpression();
       }
       break;
@@ -172,15 +175,15 @@ function handleInvalidExpression() {
 function isValidExpression(expression) {
   // let regex = /^([+-]?(\d+)?(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-] ? (\d+)?(\.\d +)?)$/;
   const regex = new RegExp(
-    "^([+-]?(\\d+)?(\\.\\d+)?(e[+-]?\\d+)?)" +
-      "([+/x-])" +
-      "([+-]?(\\d+)?(\\.\\d+)?)$"
+    "^([+-]?(\\d+)?(\\.\\d+)(e[+-]?\\d+)?)" +
+      " ([+/x-])" +
+      " ([+-]?(\\d+)(\\.\\d+)?)$"
   );
   return regex.test(expression);
 }
 
 function clearMinDisplay() {
-  minDisplay.textContent = "";
+  minDisplay.innerHTML = "";
 }
 
 function toggleSign() {
@@ -216,13 +219,14 @@ function operate(operand1, operand2, operator) {
   }
   updateMaxDisplay(result);
 
-  if (isAnOperator(minDisplay.textContent.slice(-1))) {
-    minDisplay.textContent =
-      maxDisplay.textContent + minDisplay.textContent.slice(-1);
+  if (isAnOperator(minDisplay.textContent.slice(-2)[0])) {
+    // maxDisplay.textContent + minDisplay.textContent.slice(-1);
+    minDisplay.innerHTML =
+      maxDisplay.textContent +
+      `<span> ${minDisplay.textContent.slice(-2)[0]} </span>`;
   } else {
     minDisplay.textContent = maxDisplay.textContent;
   }
-  
 }
 
 function add(operand1, operand2) {
@@ -243,9 +247,9 @@ function divide(operand1, operand2) {
 
 function parseExpression(expression) {
   const regex = new RegExp(
-    "^([+-]?(\\d+)?(\\.\\d+)?(e[+-]?\\d+)?)" +
-      "([+/x-])" +
-      "([+-]?(\\d+)?(\\.\\d+)?)$"
+    "^([+-]?(\\d+)?(\\.\\d+)(e[+-]?\\d+)?)" +
+      " ([+/x-])" +
+      " ([+-]?(\\d+)(\\.\\d+)?)$"
   );
   let [, operand1, , , , operator, operand2] = regex.exec(expression);
   return [operand1, operand2, operator];
@@ -302,12 +306,13 @@ function toggleEqualDisplay() {
 
 function deleteLastCharacter() {
   let updatedMinContent = minDisplay.textContent.slice(0, -1);
-  minDisplay.textContent = updatedMinContent;
+  minDisplay.innerHTML = updatedMinContent.replace(/([+x/-])/g,
+  ' <span>$1</span> ');
 }
 
 function throwSnarkyComment() {
-  maxDisplay.textContent = "Nice try!,but";
-  minDisplay.textContent = "can't devide a number by 0";
+  maxDisplay.textContent = "Hm... ";
+  minDisplay.textContent = "Can't do that!";
   setTimeout(() => {
     clearMaxDisplay();
     clearMinDisplay();
