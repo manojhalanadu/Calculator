@@ -173,7 +173,6 @@ function handleInvalidExpression() {
 }
 
 function isValidExpression(expression) {
-  // let regex = /^([+-]?(\d+)?(\.\d+)?(e[+-]?\d+)?)([+/x-])([+-] ? (\d+)?(\.\d +)?)$/;
   expression = expression.trim();
   const regex = new RegExp(
     "^([+-]?(\\d+)(\\.\\d+)?(e[+-]?\\d+)?)" +
@@ -191,11 +190,9 @@ function toggleSign() {
   let minContent = minDisplay.textContent.trim();
 
   if (minContent[0] == "-") {
-    minDisplay.textContent = minContent.slice(1);
-    encloseOperatorWithSpan();
+    minDisplay.innerHTML = minDisplay.innerHTML.slice(1);
   } else {
-    minDisplay.textContent = "-" + minContent;
-    encloseOperatorWithSpan();
+    minDisplay.innerHTML = "-" + minDisplay.innerHTML;
   }
 }
 
@@ -321,11 +318,16 @@ function deleteLastCharacter() {
   encloseOperatorWithSpan();
 }
 
+function replaceOperator(str) {
+  
+}
+
 function encloseOperatorWithSpan() {
   const minContent = minDisplay.textContent;
-  minDisplay.innerHTML = minContent.replace(
-    /([+x/-])/g,
-    " <span>$1</span> "
+  minDisplay.innerHTML = minContent[0] + minContent
+    .slice(1).replace(
+    /([+x/-])/,
+    "<span> $1 </span>"
   );
 }
 
