@@ -309,12 +309,18 @@ function deleteLastCharacter() {
   let minContent = minDisplay.textContent;
   let updatedMinContent = '';
   
-  if(isAnOperator(minContent.slice(-2,-1))) {
-    updatedMinContent = minDisplay.textContent.slice(0, -3);
+  // if(isAnOperator(minContent.slice(-2,-1))) {
+  //   updatedMinContent = minDisplay.textContent.slice(0, -3);
+  // } else {
+  //   updatedMinContent = minDisplay.textContent.slice(0, -1);
+  // }
+  // minDisplay.textContent = updatedMinContent;
+  if ( minContent.slice(-1) = ' ' &&
+    isAnOperator(minContent.slice(-2, -1))) {
+    updatedMinContent = minContent.slice(-2);
   } else {
-    updatedMinContent = minDisplay.textContent.slice(0, -1);
+    updatedMinContent = minContent.slice(0, -1);
   }
-  minDisplay.textContent = updatedMinContent;
   encloseOperatorWithSpan();
 }
 
@@ -326,7 +332,7 @@ function encloseOperatorWithSpan() {
   const minContent = minDisplay.textContent;
   minDisplay.innerHTML = minContent[0] + minContent
     .slice(1).replace(
-    /([+x/-])/,
+    /(\s*[+x/-]\s*)/,
     "<span> $1 </span>"
   );
 }
