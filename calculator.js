@@ -110,7 +110,7 @@ function updateMinDisplay(content) {
   if (content === "CE") {
     minDisplay.textContent = "";
   } else if (operators.includes(content)) {
-    minDisplay.innerHTML += ` <span>${content}</span> `;
+    minDisplay.innerHTML += `<span> ${content} </span>`;
   } else {
     minDisplay.innerHTML += content;
   }
@@ -307,6 +307,10 @@ function toggleEqualDisplay() {
 
 function deleteLastCharacter() {
   let minContent = minDisplay.textContent;
+
+  if (minContent === '') {
+    return;
+  }
   let updatedMinContent = '';
   
   // if(isAnOperator(minContent.slice(-2,-1))) {
@@ -315,25 +319,22 @@ function deleteLastCharacter() {
   //   updatedMinContent = minDisplay.textContent.slice(0, -1);
   // }
   // minDisplay.textContent = updatedMinContent;
-  if ( minContent.slice(-1) = ' ' &&
+  if ( minContent.slice(-1) == ' ' &&
     isAnOperator(minContent.slice(-2, -1))) {
-    updatedMinContent = minContent.slice(-2);
+    updatedMinContent = minContent.slice(0,-3);
   } else {
     updatedMinContent = minContent.slice(0, -1);
   }
+  minDisplay.textContent = updatedMinContent;
   encloseOperatorWithSpan();
-}
-
-function replaceOperator(str) {
-  
 }
 
 function encloseOperatorWithSpan() {
   const minContent = minDisplay.textContent;
   minDisplay.innerHTML = minContent[0] + minContent
     .slice(1).replace(
-    /(\s*[+x/-]\s*)/,
-    "<span> $1 </span>"
+    /(\s*([+x/-])\s*)/,
+    "<span> $2 </span>"
   );
 }
 
