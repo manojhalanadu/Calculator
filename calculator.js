@@ -308,6 +308,11 @@ function toggleEqualDisplay() {
 function deleteLastCharacter() {
   let minContent = minDisplay.textContent;
 
+  if (minContent.length === 1) {
+    minDisplay.textContent = '';
+    return;
+  }
+
   if (minContent === '') {
     return;
   }
