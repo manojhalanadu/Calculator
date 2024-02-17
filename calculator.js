@@ -31,17 +31,23 @@ const validKeys = [
 buttonsContainer.addEventListener("click", (event) => {
   const target = event.target;
   let textContent = target.textContent.trim();
-  if (target.classList.contains("button") || paragraphs.includes(target)) {
+
+  //making sure the element clicked is either the inner most
+  //paragraph element or it's container div element
+  if (target.classList.contains("button") ||
+    paragraphs.includes(target)) {
     if (isAnOperator(textContent)) {
+      const minContent = minDisplay.textContent;
+
+      //if the character entered is an operator and the 
+      //expression is already waiting for an operand, we simply
+      //return from the function
+      if (isAnOperator(minContent.slice(-2, -1))) {
+        return;
+      }
+
       return handleAnOperator(textContent);
     }
-
-    // if (maxDisplay.textContent !== "") {
-    //   minDisplay.textContent = maxDisplay.textContent;
-    //   clearMaxDisplay();
-    // }
-    //check whether the button clicked represents a function
-    //eg. clearing the display
     if (isAFunctionButton(textContent)) {
       handleFunctionButtons(textContent);
     } else {
@@ -77,10 +83,6 @@ function mapKey(key) {
 document.body.addEventListener("keydown", (event) => {
   let key = event.key;
 
-  // if (maxDisplay.textContent !== "") {
-  //   minDisplay.textContent = maxDisplay.textContent;
-  //   clearMaxDisplay();
-  // }
   if (keysToBeMapped.includes(key)) {
     key = mapKey(key);
   }
@@ -88,6 +90,7 @@ document.body.addEventListener("keydown", (event) => {
   if (isAnOperator(key)) {
     return handleAnOperator(key);
   }
+
   //check whether the button clicked represents a function
   //eg. clearing the display
   if (isAFunctionButton(key)) {
@@ -98,18 +101,21 @@ document.body.addEventListener("keydown", (event) => {
 });
 
 function isAnOperator(string) {
-
   return operators.includes(string);
 }
 
 function updateMinDisplay(content) {
-  if ( isMinDisplayContentExceeding() ) {
+  //return from the function if the minDisplay is completely
+  //filled
+  if (isMinDisplayContentExceeding()) {
     return;
   }
 
   if (content === "CE") {
     minDisplay.textContent = "";
   } else if (operators.includes(content)) {
+    //wrap the operator within the span element so that styles
+    //pertaining to operators can be applied
     minDisplay.innerHTML += `<span> ${content} </span>`;
   } else {
     minDisplay.innerHTML += content;
@@ -141,9 +147,12 @@ function handleFunctionButtons(functionSymbol) {
       break;
     case "=":
       const minContent = minDisplay.textContent;
+
       if (isValidExpression(minContent)) {
         handleValidExpression(minContent);
-      } else if (minContent != '' && (/[+/x-]/.test(minContent))) {
+        //if the input expression is not valid and it contains
+        //operators, then execute handleInvalidExpression function
+      } else if (minContent != "" && /[+/x-]/.test(minContent)) {
         handleInvalidExpression();
       }
       break;
@@ -161,23 +170,20 @@ function handleValidExpression(expression) {
 }
 
 function handleInvalidExpression() {
-  // maxDisplay.style.fontSize = "1rem";
   maxDisplay.textContent = "Invalid";
 
   setTimeout(() => {
     clearMaxDisplay();
-    // clearMinDisplay();
     removeSeperationLine();
-    // maxDisplay.style.fontSize = "2rem";
   }, 2000);
 }
 
 function isValidExpression(expression) {
   expression = expression.trim();
   const regex = new RegExp(
-    "^([+-]?(\\d+)(\\.\\d+)?(e[+-]?\\d+)?)" +
-      " ([+/x-])" +
-      " ([+-]?(\\d+)(\\.\\d+)?)$"
+    "^([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+))(e[+-]?\\d+)?)" +
+    " ([+\\/x-])" +
+    " ([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+)))$"
   );
   return regex.test(expression);
 }
@@ -187,7 +193,7 @@ function clearMinDisplay() {
 }
 
 function toggleSign() {
-  let minContent = minDisplay.textContent.trim();
+  let minContent = minDisplay.textContent;
 
   if (minContent[0] == "-") {
     minDisplay.innerHTML = minDisplay.innerHTML.slice(1);
@@ -221,12 +227,11 @@ function operate(operand1, operand2, operator) {
   }
   updateMaxDisplay(result);
 
-  if (isAnOperator(minDisplay.textContent.slice(-2)[0])) {
-    minDisplay.innerHTML =
-      maxDisplay.textContent + minDisplay.textContent.slice(-2)[0];
+  if (isAnOperator(minContent.slice(-1))) {
+    minDisplay.innerHTML = maxDisplay.textContent + minContent.slice(-1);
     encloseOperatorWithSpan();
   } else {
-    minDisplay.textContent = maxDisplay.textContent;
+    minContent = maxDisplay.textContent;
   }
 }
 
@@ -247,12 +252,20 @@ function divide(operand1, operand2) {
 }
 
 function parseExpression(expression) {
+  // const regex = new RegExp(
+  //   "^([+-]?(\\d+)(\\.\\d+)?(e[+-]?\\d+)?)" +
+  //     " ([+/x-])" +
+  //     " ([+-]?(\\d+)(\\.\\d+)?)$"
+  // );
   const regex = new RegExp(
-    "^([+-]?(\\d+)(\\.\\d+)?(e[+-]?\\d+)?)" +
-      " ([+/x-])" +
-      " ([+-]?(\\d+)(\\.\\d+)?)$"
+    "^([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+))(e[+-]?\\d+)?)" +
+    " ([+\\/x-])" +
+    " ([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+)))$"
   );
-  let [, operand1, , , , operator, operand2] = regex.exec(expression);
+  //skipping 0th, 2nd, 3rd, 4rth, 5th, and 6th element of the 
+  //object returned by the exec function because they are not needed
+  let [, operand1, , , , , , operator, operand2] =
+    regex.exec(expression);
   return [operand1, operand2, operator];
 }
 
@@ -262,25 +275,27 @@ function updateMaxDisplay(content) {
   if (content > MAX_NUMBER) {
     content = content.toExponential(3);
   } else {
+    //toFixed method returns a string, so type conversion to
+    //number is necessary
     content = +content.toFixed(4);
   }
 
-   if ((content+"").length > 10) {
-     reduceMaxDisplayFontSize();
-   } else {
-     increaseMaxDisplayFontSize();
-   }
+  if ((content + "").length > 10) {
+    reduceMaxDisplayFontSize();
+  } else {
+    increaseMaxDisplayFontSize();
+  }
 
   maxDisplay.textContent = content;
   toggleEqualDisplay();
 }
 
 function reduceMaxDisplayFontSize() {
-  maxDisplay.style.fontSize = '1.5rem';
+  maxDisplay.style.fontSize = "1.5rem";
 }
 
 function increaseMaxDisplayFontSize() {
-  maxDisplay.style.fontSize = '2rem';
+  maxDisplay.style.fontSize = "2rem";
 }
 
 function clearMaxDisplay() {
@@ -307,47 +322,53 @@ function toggleEqualDisplay() {
 
 function deleteLastCharacter() {
   let minContent = minDisplay.textContent;
+  let updatedMinContent = "";
 
   if (minContent.length === 1) {
-    minDisplay.textContent = '';
+    minDisplay.innerHTML = "";
     return;
   }
 
-  if (minContent === '') {
+  if (minContent === "") {
     return;
   }
-  let updatedMinContent = '';
-  
-  // if(isAnOperator(minContent.slice(-2,-1))) {
-  //   updatedMinContent = minDisplay.textContent.slice(0, -3);
-  // } else {
-  //   updatedMinContent = minDisplay.textContent.slice(0, -1);
-  // }
-  // minDisplay.textContent = updatedMinContent;
-  if ( minContent.slice(-1) == ' ' &&
-    isAnOperator(minContent.slice(-2, -1))) {
-    updatedMinContent = minContent.slice(0,-3);
+
+  if (minContent.slice(-1) == " " && isAnOperator(minContent.slice(-2, -1))) {
+    //this removes the operator and the two space characters
+    //that surround it
+    updatedMinContent = minContent.slice(0, -3);
   } else {
     updatedMinContent = minContent.slice(0, -1);
   }
+
   minDisplay.textContent = updatedMinContent;
   encloseOperatorWithSpan();
 }
 
 function encloseOperatorWithSpan() {
   const minContent = minDisplay.textContent;
-  minDisplay.innerHTML = minContent[0] + minContent
-    .slice(1).replace(
-    /(\s*([+x/-])\s*)/,
-    "<span> $2 </span>"
-  );
+
+  //Isolationg the first character ensures that '-' character
+  //(as in -99) is not treated as an operator, preventing
+  //it from being styled as one
+  minDisplay.innerHTML =
+    minContent[0] +
+    minContent
+      .slice(1)
+      .replace(/(\s*([^e])([+x/-])\s*)/, "$2<span> $3 </span>");
 }
 
 function throwSnarkyComment() {
   maxDisplay.textContent = "Hm... ";
   minDisplay.textContent = "Can't do that!";
+
   setTimeout(() => {
     clearMaxDisplay();
     clearMinDisplay();
   }, 2000);
 }
+
+//modified regex
+//const regex = new RegExp(
+//  '^([+-]?(\\d+)|(\\d+\\.\\d+)|(\\.\\d+)(e[+-]?\\d+)?)' +           ' ([+\\/x-])' + 
+//   ' ([+-]?(\\d+)?(\\.\\d+)?)$');
