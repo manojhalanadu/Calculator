@@ -42,7 +42,8 @@ buttonsContainer.addEventListener("click", (event) => {
       //if the character entered is an operator and the 
       //expression is already waiting for an operand, we simply
       //return from the function
-      if (isAnOperator(minContent.slice(-2, -1))) {
+      if (isAnOperator(minContent.slice(-2, -1)) &&
+      minContent.length > 2) {
         return;
       }
 
@@ -263,7 +264,7 @@ function parseExpression(expression) {
     " ([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+)))$"
   );
   //skipping 0th, 2nd, 3rd, 4rth, 5th, and 6th element of the 
-  //object returned by the exec function because they are not needed
+  //object returned by the exec method because they are not needed
   let [, operand1, , , , , , operator, operand2] =
     regex.exec(expression);
   return [operand1, operand2, operator];
@@ -348,6 +349,10 @@ function deleteLastCharacter() {
 function encloseOperatorWithSpan() {
   const minContent = minDisplay.textContent;
 
+  if (minContent.length === 2) {
+    minDisplay.innerHTML = minContent.replace()
+  }
+
   //Isolationg the first character ensures that '-' character
   //(as in -99) is not treated as an operator, preventing
   //it from being styled as one
@@ -355,7 +360,9 @@ function encloseOperatorWithSpan() {
     minContent[0] +
     minContent
       .slice(1)
-      .replace(/(\s*([^e])([+x/-])\s*)/, "$2<span> $3 </span>");
+      // .replace(/(\s*([^e])([+x/-])\s*)/, "$2<span> $3 </span>");
+      .replace(/\s*(([^e])([+x/-])|([+x/-]))\s*/,
+        "$2<span> $3$4 </span>");
 }
 
 function throwSnarkyComment() {
