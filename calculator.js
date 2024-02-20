@@ -5,7 +5,7 @@ const paragraphs = Array.from(document.querySelectorAll(".button p"));
 const equals = buttonsContainer.querySelector("#equals");
 const maxDisplay = document.querySelector(".max-display-content");
 const equalSymbol = document.querySelector(".equals-symbol");
-const MAX_NUMBER = 9999999999;
+const MAX_NUMBER = 999999999;
 const keysToBeMapped = ["Backspace", "Delete", "Enter", "*"];
 const operators = ["+", "-", "/", "x"];
 const validKeys = [
@@ -34,16 +34,14 @@ buttonsContainer.addEventListener("click", (event) => {
 
   //making sure the element clicked is either the inner most
   //paragraph element or it's container div element
-  if (target.classList.contains("button") ||
-    paragraphs.includes(target)) {
+  if (target.classList.contains("button") || paragraphs.includes(target)) {
     if (isAnOperator(textContent)) {
       const minContent = minDisplay.textContent;
 
-      //if the character entered is an operator and the 
+      //if the character entered is an operator and the
       //expression is already waiting for an operand, we simply
       //return from the function
-      if (isAnOperator(minContent.slice(-2, -1)) &&
-      minContent.length > 2) {
+      if (isAnOperator(minContent.slice(-2, -1)) && minContent.length > 2) {
         return;
       }
 
@@ -183,8 +181,8 @@ function isValidExpression(expression) {
   expression = expression.trim();
   const regex = new RegExp(
     "^([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+))(e[+-]?\\d+)?)" +
-    " ([+\\/x-])" +
-    " ([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+)))$"
+      " ([+\\/x-])" +
+      " ([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+)))$"
   );
   return regex.test(expression);
 }
@@ -253,27 +251,23 @@ function divide(operand1, operand2) {
 }
 
 function parseExpression(expression) {
-  // const regex = new RegExp(
-  //   "^([+-]?(\\d+)(\\.\\d+)?(e[+-]?\\d+)?)" +
-  //     " ([+/x-])" +
-  //     " ([+-]?(\\d+)(\\.\\d+)?)$"
-  // );
   const regex = new RegExp(
     "^([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+))(e[+-]?\\d+)?)" +
-    " ([+\\/x-])" +
-    " ([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+)))$"
+      " ([+\\/x-])" +
+      " ([+-]?((\\d+)|(\\d+\\.\\d+)|(\\.\\d+)))$"
   );
-  //skipping 0th, 2nd, 3rd, 4rth, 5th, and 6th element of the 
+  //skipping 0th, 2nd, 3rd, 4rth, 5th, and 6th element of the
   //object returned by the exec method because they are not needed
-  let [, operand1, , , , , , operator, operand2] =
-    regex.exec(expression);
+  let [, operand1, , , , , , operator, operand2] = regex.exec(expression);
   return [operand1, operand2, operator];
 }
 
 function updateMaxDisplay(content) {
   content = +content;
 
-  if (content > MAX_NUMBER) {
+  //convert the number to its exponential counterpart
+  //so as to prevent it from overflowing the maxDisplay
+  if (content > MAX_NUMBER || -content > MAX_NUMBER) {
     content = content.toExponential(3);
   } else {
     //toFixed method returns a string, so type conversion to
@@ -348,9 +342,11 @@ function deleteLastCharacter() {
 
 function encloseOperatorWithSpan() {
   const minContent = minDisplay.textContent;
+  const regex = /\s*((\s)|(\d))([+x/-])\s*/;
 
   if (minContent.length === 2) {
-    minDisplay.innerHTML = minContent.replace()
+    minDisplay.innerHTML = minContent.replace(regex, "$3<span> $4 </span>");
+    return;
   }
 
   //Isolationg the first character ensures that '-' character
@@ -361,8 +357,7 @@ function encloseOperatorWithSpan() {
     minContent
       .slice(1)
       // .replace(/(\s*([^e])([+x/-])\s*)/, "$2<span> $3 </span>");
-      .replace(/\s*(([^e])([+x/-])|([+x/-]))\s*/,
-        "$2<span> $3$4 </span>");
+      .replace(regex, "$3<span> $4 </span>");
 }
 
 function throwSnarkyComment() {
@@ -374,8 +369,3 @@ function throwSnarkyComment() {
     clearMinDisplay();
   }, 2000);
 }
-
-//modified regex
-//const regex = new RegExp(
-//  '^([+-]?(\\d+)|(\\d+\\.\\d+)|(\\.\\d+)(e[+-]?\\d+)?)' +           ' ([+\\/x-])' + 
-//   ' ([+-]?(\\d+)?(\\.\\d+)?)$');
