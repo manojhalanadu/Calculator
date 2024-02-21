@@ -30,37 +30,63 @@ const validKeys = [
 
 buttonsContainer.addEventListener("click", (event) => {
   const target = event.target;
-  let textContent = target.textContent.trim();
+  let characterEntered = target.characterEntered.trim();
 
   //making sure the element clicked is either the inner most
   //paragraph element or it's container div element
   if (target.classList.contains("button") || paragraphs.includes(target)) {
-    if (isAnOperator(textContent)) {
-      const minContent = minDisplay.textContent;
+    if (isAnOperator(characterEntered)) {
+      const minContent = minDisplay.characterEntered;
 
-      //if the character entered is an operator and the
-      //expression is already waiting for an operand, we simply
-      //return from the function
-      if ((/\s[+x/-]\s/.test(minContent.slice(-3))) && textContent != "-"
-      || /\s[+/x-]\s\-/.test(minContent.slice(-4))) {
-        // && minContent.length > 2
-        return;
-      } else if (/\s[+x/-]\s/.test(minContent.slice(-3))
-        && textContent ===
-        "-") {
-        minDisplay.innerHTML = minDisplay.innerHTML + "-";
-        return;
-      } else if (/\d/.test(minContent.slice(-1))) {
-        return handleAnOperator(textContent);
-        }
+      //if minContent ends with a digit and not an operator,
+      //we simply handle the operator without concerning ourselves
+      //about operator chaining
+      if (/\d/.test(minContent.slice(-1))) {
+        return handleAnOperator(characterEntered);
+      } else {
+        return handleOperatorChaining(characterEntered);
+      }
     }
-    if (isAFunctionButton(textContent)) {
-      handleFunctionButtons(textContent);
+    if (isAFunctionButton(characterEntered)) {
+      handleFunctionButtons(characterEntered);
     } else {
-      updateMinDisplay(textContent);
+      updateMinDisplay(characterEntered);
     }
   }
-});
+});``
+
+function handleOperatorChaining(operator) {
+  let minContent = minDisplay.textContent;
+
+  if (isInvalidOperatorChaining(operator)) {
+    //if the character entered is an operator and the
+    //expression is already waiting for an operand (i.e invalid
+    //operator chaining e.g 8 x /.), we simply
+    //return from the function
+    return;
+  } else {
+    minDisplay.innerHTML = minDisplay.innerHTML + "-";
+    return;
+  }
+}
+
+function isInvalidOperatorChaining(operator) {
+  const minContent = minDisplay.textContent;
+
+  if (
+    (/\s[+x/-]\s/.test(minContent.slice(-3)) && operator != "-") ||
+    /\s[+/x-]\s\-/.test(minContent.slice(-4))
+  ) {
+    return true;
+  }
+  //if unary '-' is used in order to negate the sign of
+  //the second operator, this is not considered as an invalid
+  //operator chaining. e.g 8 x -1
+  else if (/\s[+x/-]\s/.test(minContent.slice(-3))
+  && operator === "-") {
+    return false;
+  }
+}
 
 function handleAnOperator(operator) {
   let expression = minDisplay.textContent;
@@ -75,13 +101,18 @@ function handleAnOperator(operator) {
 
 document.body.addEventListener("keydown", (event) => {
   let key = event.key;
+  let minContent = minDisplay.textContent;
 
   if (keysToBeMapped.includes(key)) {
     key = mapKey(key);
   }
 
   if (isAnOperator(key)) {
-    return handleAnOperator(key);
+    if (/\d/.test(minContent.slice(-1))) {
+      return handleAnOperator(key);
+    } else {
+      return handleOperatorChaining(key);
+    }
   }
 
   //check whether the button clicked represents a function
