@@ -41,11 +41,18 @@ buttonsContainer.addEventListener("click", (event) => {
       //if the character entered is an operator and the
       //expression is already waiting for an operand, we simply
       //return from the function
-      if (isAnOperator(minContent.slice(-2, -1)) && minContent.length > 2) {
+      if ((/\s[+x/-]\s/.test(minContent.slice(-3))) && textContent != "-"
+      || /\s[+/x-]\s\-/.test(minContent.slice(-4))) {
+        // && minContent.length > 2
         return;
-      }
-
-      return handleAnOperator(textContent);
+      } else if (/\s[+x/-]\s/.test(minContent.slice(-3))
+        && textContent ===
+        "-") {
+        minDisplay.innerHTML = minDisplay.innerHTML + "-";
+        return;
+      } else if (/\d/.test(minContent.slice(-1))) {
+        return handleAnOperator(textContent);
+        }
     }
     if (isAFunctionButton(textContent)) {
       handleFunctionButtons(textContent);
@@ -63,19 +70,6 @@ function handleAnOperator(operator) {
     return handleValidExpression(expression);
   } else {
     return updateMinDisplay(operator);
-  }
-}
-
-function mapKey(key) {
-  switch (key) {
-    case "Delete":
-      return "CE";
-    case "Enter":
-      return "=";
-    case "Backspace":
-      return "←";
-    case "*":
-      return "x";
   }
 }
 
@@ -98,6 +92,19 @@ document.body.addEventListener("keydown", (event) => {
     updateMinDisplay(key);
   }
 });
+
+function mapKey(key) {
+  switch (key) {
+    case "Delete":
+      return "CE";
+    case "Enter":
+      return "=";
+    case "Backspace":
+      return "←";
+    case "*":
+      return "x";
+  }
+}
 
 function isAnOperator(string) {
   return operators.includes(string);
