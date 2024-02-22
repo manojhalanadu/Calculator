@@ -110,9 +110,9 @@ label {
 }
 
 .button-dark {
-  background-color: #000050;
+  background-color: #1b110b;
+  color: #11dff1;
 }
-
 .button-light {
   background-color: #11dff1;
 }
@@ -145,7 +145,7 @@ label {
 }
 
 .button-light:hover {
-  background-color: #000050;
+  background-color: #1b110b;
   color: white;
 }
 

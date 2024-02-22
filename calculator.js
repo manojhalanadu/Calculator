@@ -30,13 +30,13 @@ const validKeys = [
 
 buttonsContainer.addEventListener("click", (event) => {
   const target = event.target;
-  let characterEntered = target.characterEntered.trim();
+  let characterEntered = target.textContent.trim();
 
   //making sure the element clicked is either the inner most
   //paragraph element or it's container div element
   if (target.classList.contains("button") || paragraphs.includes(target)) {
     if (isAnOperator(characterEntered)) {
-      const minContent = minDisplay.characterEntered;
+      const minContent = minDisplay.textContent;
 
       //if minContent ends with a digit and not an operator,
       //we simply handle the operator without concerning ourselves
