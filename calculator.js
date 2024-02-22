@@ -53,7 +53,7 @@ buttonsContainer.addEventListener("click", (event) => {
       updateMinDisplay(characterEntered);
     }
   }
-});``
+});
 
 function handleOperatorChaining(operator) {
   let minContent = minDisplay.textContent;
@@ -165,8 +165,8 @@ function isMinDisplayContentExceeding() {
 }
 
 function isAFunctionButton(text) {
-  //function symbols here refer to symbols that represent some actions
-  //and are not meant to be displayed
+  //function symbols here refer to symbols that represent
+  // some actions and are not meant to be displayed
   const functionSymbols = ["CE", "+/-", "=", "←"];
   return functionSymbols.includes(text);
 }
@@ -248,6 +248,7 @@ function operate(operand1, operand2, operator) {
   if (operator === "/" && operand2 === 0) {
     return throwSnarkyComment();
   }
+
   switch (operator) {
     case "+":
       result += add(operand1, operand2);
@@ -360,9 +361,7 @@ function deleteLastCharacter() {
   if (minContent.length === 1) {
     minDisplay.innerHTML = "";
     return;
-  }
-
-  if (minContent === "") {
+  } else if (minContent === "") {
     return;
   }
 
@@ -393,9 +392,7 @@ function encloseOperatorWithSpan() {
   minDisplay.innerHTML =
     minContent[0] +
     minContent
-      .slice(1)
-      // .replace(/(\s*([^e])([+x/-])\s*)/, "$2<span> $3 </span>");
-      .replace(regex, "$3<span> $4 </span>");
+      .slice(1).replace(regex, "$3<span> $4 </span>");
 }
 
 function throwSnarkyComment() {
